@@ -9,4 +9,10 @@ class Intern extends Model
 {
     /** @use HasFactory<\Database\Factories\InternFactory> */
     use HasFactory;
+
+    protected $hidden =
+    [
+        'created_at',
+        'updated_at'
+    ];
 }

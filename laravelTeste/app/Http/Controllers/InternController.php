@@ -12,7 +12,7 @@ class InternController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Intern::all());
     }
 
     /**
@@ -29,6 +29,8 @@ class InternController extends Controller
     public function store(Request $request)
     {
         //
+        $intern = $request->all();
+        dd($intern);
     }
 
     /**
@@ -36,7 +38,7 @@ class InternController extends Controller
      */
     public function show(Intern $intern)
     {
-        //
+        return Intern::find($intern);
     }
 
     /**
