@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Intern;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\New_;
+use App\Http\Requests\InternRequest;
 
 class InternController extends Controller
 {
@@ -26,11 +28,18 @@ class InternController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InternRequest $request)
     {
         //
-        $intern = $request->all();
-        dd($intern);
+        $data = $request->all();
+        try {
+            $intern = Intern::create($data);
+            return response()->json($intern);
+
+        } catch (\Throwable $th) {
+            return response()->json(["msg" => "Erro ao criar o estagiário"]);
+        }
+        
     }
 
     /**

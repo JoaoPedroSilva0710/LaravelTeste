@@ -10,6 +10,13 @@ class Intern extends Model
     /** @use HasFactory<\Database\Factories\InternFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'sex',
+        'birth',
+    ];
+
+
     protected $hidden =
     [
         'created_at',
