@@ -23,7 +23,7 @@ class InternRequest extends FormRequest
     {
         return [
             "name" => "required",
-            "sex" => "required",
+            "gender" => "required",
             "birth" => "required"    
         ];
     }

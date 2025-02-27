@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Interns\Gender;
 use App\Models\Phone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +21,7 @@ class InternFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'sex' => fake()->randomElement(['F', 'M', 'O']),
+            'gender' => fake()->randomElement(Gender::cases())->value,
             'birth' => fake()->date()
         ];
     }

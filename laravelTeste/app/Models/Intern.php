@@ -12,7 +12,7 @@ class Intern extends Model
 
     protected $fillable = [
         'name',
-        'sex',
+        'gender',
         'birth',
     ];
 
