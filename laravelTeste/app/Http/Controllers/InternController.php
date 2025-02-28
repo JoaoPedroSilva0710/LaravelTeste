@@ -6,6 +6,7 @@ use App\Models\Intern;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\New_;
 use App\Http\Requests\InternRequest;
+use App\Models\Phone;
 
 class InternController extends Controller
 {
@@ -31,13 +32,20 @@ class InternController extends Controller
     public function store(InternRequest $request)
     {
         //
-        $data = $request->all();
+        $validated = $request->validated();
+        $dataIntern = ['name' => $validated['name'], 'gender' => $validated['gender'], 'birth' => $validated['birth'], 'cpf' => $validated['cpf']];
+        
         try {
-            $intern = Intern::create($data);
-            return response()->json($intern);
+            $intern = Intern::create($dataIntern);
+
+            $dataPhone = ['number' => $validated['phone'], 'intern_id' => $intern->id];
+
+            $phone = Phone::create($dataPhone);
+
+            return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone]);
 
         } catch (\Throwable $th) {
-            return response()->json(["msg" => "Erro ao criar o estagiário"]);
+            return response()->json(["message" => $th->getMessage()]);
         }
         
     }

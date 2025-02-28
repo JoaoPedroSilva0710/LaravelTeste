@@ -6,6 +6,7 @@ use App\Enums\Interns\Gender;
 use App\Models\Phone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Testing\Fakes\Fake;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Intern>
@@ -19,10 +20,12 @@ class InternFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
             'name' => fake()->name(),
             'gender' => fake()->randomElement(Gender::cases())->value,
-            'birth' => fake()->date()
+            'birth' => fake()->date(),
+            'cpf' => fake()->unique()->numerify('###########')
         ];
     }
 

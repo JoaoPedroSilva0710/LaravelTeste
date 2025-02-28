@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('gender');
             $table->date('birth');
+            $table->string('cpf')->unique();
             $table->timestamps();
         });
     }

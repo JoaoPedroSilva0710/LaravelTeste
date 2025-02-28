@@ -14,6 +14,7 @@ class Intern extends Model
         'name',
         'gender',
         'birth',
+        'cpf'
     ];
 
 
