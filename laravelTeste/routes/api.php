@@ -14,3 +14,5 @@ Route::get('/interns', [InternController::class, 'index']);
 Route::post('/interns', [InternController::class, 'store']);
 
 Route::get('/interns/{intern}', [InternController::class, 'show']);
+
+Route::get('/interns/findByName/{name}', [InternController::class, 'showByName']);

@@ -71,6 +71,15 @@ class InternController extends Controller
         return Intern::find($intern);
     }
 
+
+    public function showByName(string $name)
+    {
+        $response = Intern::whereRaw("ts_vector_search_name @@ to_tsquery(?)", [$name])->get();
+
+        return response()->json($response);
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      */

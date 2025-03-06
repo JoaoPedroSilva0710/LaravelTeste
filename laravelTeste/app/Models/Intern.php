@@ -21,6 +21,7 @@ class Intern extends Model
     protected $hidden =
     [
         'created_at',
-        'updated_at'
+        'updated_at',
+        'ts_vector_search_name'
     ];
 }
