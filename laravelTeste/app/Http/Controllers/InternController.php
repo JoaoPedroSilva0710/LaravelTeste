@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 use PhpParser\Node\Expr\New_;
 use App\Http\Requests\InternRequest;
 use App\Models\Phone;
+use Illuminate\Http\RedirectResponse;
 
 class InternController extends Controller
 {
+    const GENERIC_ERROR = 'Erro, contate os administradores para entender o ocorrido';
+    const CPF_DUPLICATED = 'Este CPF já está cadastrado no sistema';
+
     /**
      * Display a listing of the resource.
      */
@@ -31,9 +35,14 @@ class InternController extends Controller
      */
     public function store(InternRequest $request)
     {
-        //
+        
         $validated = $request->validated();
-        $dataIntern = ['name' => $validated['name'], 'gender' => $validated['gender'], 'birth' => $validated['birth'], 'cpf' => $validated['cpf']];
+
+        if(!$validated) return response()->json("Algum erro");
+
+        $cpf = preg_replace( '/[^0-9]/is', '', $validated['cpf'] );
+
+        $dataIntern = ['name' => $validated['name'], 'gender' => $validated['gender'], 'birth' => $validated['birth'], 'cpf' => $cpf];
         
         try {
             $intern = Intern::create($dataIntern);
@@ -42,10 +51,14 @@ class InternController extends Controller
 
             $phone = Phone::create($dataPhone);
 
-            return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone]);
+            return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone], 201);
 
         } catch (\Throwable $th) {
-            return response()->json(["message" => $th->getMessage()]);
+            if (!str_contains($th->getMessage(), "interns_cpf_unique")) {
+                return $this->sendSweetalert('error',self::GENERIC_ERROR, 400);
+            }
+
+            return $this->sendSweetalert('error', self::CPF_DUPLICATED, 422);
         }
         
     }

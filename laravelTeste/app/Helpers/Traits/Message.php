@@ -2,11 +2,13 @@
 
 namespace App\Helpers\Traits;
 
+use Illuminate\Http\JsonResponse;
+
 trait Message
 {
-    public function sendSweetalertMessage(string $icon, string $message, int $statusCode): array
+    public function sendSweetalert(string $icon, string $message, int $statusCode = 200): JsonResponse
     { 
-            return ['data' => ['icon' => $icon, 'message' => $message], 'statusCode' => $statusCode] ;
+            return response()->json(['data' => ['icon' => $icon, 'message' => $message], 'statusCode' => $statusCode]) ;
         
     }
 }

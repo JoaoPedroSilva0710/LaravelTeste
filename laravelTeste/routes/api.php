@@ -11,6 +11,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/interns', [InternController::class, 'index']);
 
-Route::get('/interns/{intern}', [InternController::class, 'show']);
-
 Route::post('/interns', [InternController::class, 'store']);
+
+Route::get('/interns/{intern}', [InternController::class, 'show']);
