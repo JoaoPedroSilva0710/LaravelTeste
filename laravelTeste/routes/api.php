@@ -15,6 +15,8 @@ Route::post('/interns', [InternController::class, 'store']);
 
 Route::get('/interns/{intern}', [InternController::class, 'show']);
 
-Route::post('/interns/{intern}/{phone}', [InternController::class, 'update']);
+Route::post('/interns/update/{intern}/{phone}', [InternController::class, 'update']);
+
+Route::post('/interns/delete/{intern}', [InternController::class, 'destroy']);
 
 Route::get('/interns/findByName/{name}', [InternController::class, 'showByName']);

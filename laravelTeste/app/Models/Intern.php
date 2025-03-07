@@ -23,7 +23,8 @@ class Intern extends Model
     [
         'created_at',
         'updated_at',
-        'ts_vector_search_name'
+        'ts_vector_search_name',
+        'deleted_at'
     ];
 
     public function phones(): HasMany

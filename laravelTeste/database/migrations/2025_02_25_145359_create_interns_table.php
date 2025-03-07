@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('cpf')->unique();
             $table->rawColumn('ts_vector_search_name', 'tsvector')->nullable();
             $table->timestamps();
+            $table->date('deleted_at')->nullable();
 
      });
 

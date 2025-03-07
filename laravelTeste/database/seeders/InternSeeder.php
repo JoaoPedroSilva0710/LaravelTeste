@@ -13,6 +13,6 @@ class InternSeeder extends Seeder
      */
     public function run(): void
     {
-        Intern::factory(500)->create();
+        Intern::factory(300)->create();
     }
 }

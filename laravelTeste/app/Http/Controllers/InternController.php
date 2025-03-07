@@ -8,6 +8,9 @@ use PhpParser\Node\Expr\New_;
 use App\Http\Requests\InternRequest;
 use App\Models\Phone;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+
+use function Illuminate\Log\log;
 
 class InternController extends Controller
 {
@@ -19,16 +22,9 @@ class InternController extends Controller
      */
     public function index()
     {
-        return response()->json(Intern::with('phones')->get());
+        return response()->json(Intern::with('phones')->paginate(15));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -78,19 +74,10 @@ class InternController extends Controller
         return response()->json($response);
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Intern $intern)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Intern $intern, Phone $phone)
+    public function update(InternRequest $request, Intern $intern, Phone $phone)
     {
         $validated = $request->validated();
 
@@ -99,20 +86,17 @@ class InternController extends Controller
         $dataIntern = ['name' => $validated['name'], 'gender' => $validated['gender'], 'birth' => $validated['birth'], 'cpf' => $cpf];
         
         try {
-            $intern = Intern::find($intern);
-
             $intern->update($dataIntern);
 
             $dataPhone = ['number' => $validated['phone']];
 
-            $phone = Phone::find($phone);
-
-            $phone = $phone->update($dataPhone);
+            $phone->update($dataPhone);
 
             return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone], 201);
 
         } catch (\Throwable $th) {
             if (!str_contains($th->getMessage(), "interns_cpf_unique")) {
+                Log::info($th->getMessage());
                 return $this->sendSweetalert('error',self::GENERIC_ERROR, 400);
             }
 
@@ -127,5 +111,13 @@ class InternController extends Controller
     public function destroy(Intern $intern)
     {
         //
+        try {
+            $intern->update(['deleted_at' => date('Y-m-d')]);
+            return $this->sendSweetalert('success', 'Estagiário deletado com sucesso');
+
+        } catch (\Throwable $th) {
+            Log::info($th->getMessage(), [$th]);
+            return $this->sendSweetalert('error', self::GENERIC_ERROR, 400);
+        }
     }
 }
