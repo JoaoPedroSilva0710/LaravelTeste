@@ -19,7 +19,7 @@ class InternController extends Controller
      */
     public function index()
     {
-        return response()->json(Intern::all());
+        return response()->json(Intern::with('phones')->get());
     }
 
     /**
@@ -37,8 +37,6 @@ class InternController extends Controller
     {
         
         $validated = $request->validated();
-
-        if(!$validated) return response()->json("Algum erro");
 
         $cpf = preg_replace( '/[^0-9]/is', '', $validated['cpf'] );
 
@@ -74,7 +72,8 @@ class InternController extends Controller
 
     public function showByName(string $name)
     {
-        $response = Intern::whereRaw("ts_vector_search_name @@ to_tsquery(?)", [$name])->get();
+        $response = Intern::whereRaw("ts_vector_search_name @@ to_tsquery(?)", [$name])->paginate(15);
+
 
         return response()->json($response);
     }
@@ -91,9 +90,35 @@ class InternController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Intern $intern)
+    public function update(Request $request, Intern $intern, Phone $phone)
     {
-        //
+        $validated = $request->validated();
+
+        $cpf = preg_replace( '/[^0-9]/is', '', $validated['cpf'] );
+
+        $dataIntern = ['name' => $validated['name'], 'gender' => $validated['gender'], 'birth' => $validated['birth'], 'cpf' => $cpf];
+        
+        try {
+            $intern = Intern::find($intern);
+
+            $intern->update($dataIntern);
+
+            $dataPhone = ['number' => $validated['phone']];
+
+            $phone = Phone::find($phone);
+
+            $phone = $phone->update($dataPhone);
+
+            return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone], 201);
+
+        } catch (\Throwable $th) {
+            if (!str_contains($th->getMessage(), "interns_cpf_unique")) {
+                return $this->sendSweetalert('error',self::GENERIC_ERROR, 400);
+            }
+
+            return $this->sendSweetalert('error', self::CPF_DUPLICATED, 422);
+        }
+        
     }
 
     /**

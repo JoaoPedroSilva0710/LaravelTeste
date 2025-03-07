@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Intern extends Model
 {
@@ -24,4 +25,9 @@ class Intern extends Model
         'updated_at',
         'ts_vector_search_name'
     ];
+
+    public function phones(): HasMany
+{
+	return $this->hasMany(Phone::class);
+}
 }
