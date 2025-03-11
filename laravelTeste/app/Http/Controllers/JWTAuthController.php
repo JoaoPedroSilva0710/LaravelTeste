@@ -16,7 +16,8 @@ class JWTAuthController extends Controller
     const USER_NOT_FOUND = 'O usuário não foi encontrado';
     const INVALID_TOKEN = 'O token é inválido';
     const USER_LOGOUT = 'O usuário foi deslogado com sucesso';
-
+    const USER_LOGGIN = 'O usuário foi logado com sucesso';
+    const USER_REGISTRED = 'O usuário foi registrado com sucesso';
        // User registration
        public function register(Request $request)
        {
@@ -38,7 +39,7 @@ class JWTAuthController extends Controller
    
            $token = JWTAuth::fromUser($user);
    
-           return response()->json(compact('user','token'), 201);
+           return $this->sendSweetAlert('error', self::USER_REGISTRED, 201, nameAdicionalData:'user_data', adicionalData:['user' => $user, 'token' => $token]);
        }
    
        // User login
@@ -48,7 +49,7 @@ class JWTAuthController extends Controller
    
            try {
                if (! $token = JWTAuth::attempt($credentials)) {
-                   return response()->json(['error' => self::INVALID_CREDENTIALS], 401);
+                return $this->sendSweetAlert('error', self::INVALID_CREDENTIALS, 401);
                }
    
                // Get the authenticated user.
@@ -57,10 +58,13 @@ class JWTAuthController extends Controller
                // (optional) Attach the role to the token.
                $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
    
-               return response()->json(compact('user','token'), 201);
+
+               return $this->sendSweetalert('success', self::USER_LOGGIN, data:[$user], token:$token);
+
+               return $this->sendSweetalert('success', self::USER_LOGGIN, token:'token');
 
            } catch (JWTException $e) {
-               return response()->json(['error' => self::NOT_POSSIBLE_CREATE_TOKEN], 500);
+               return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
            }
        }
    
@@ -69,13 +73,13 @@ class JWTAuthController extends Controller
        {
            try {
                if (! $user = JWTAuth::parseToken()->authenticate()) {
-                   return response()->json(['error' => self::USER_NOT_FOUND], 404);
+                   return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
                }
            } catch (JWTException $e) {
-               return response()->json(['error' => self::INVALID_TOKEN], 400);
+               return $this->sendSweetalert('error', self::INVALID_TOKEN, 400);
            }
    
-           return response()->json(compact('user'));
+           return $this->sendSweetalert('success', 'usuário obtido', data:[$user]);
        }
    
        // User logout

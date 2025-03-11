@@ -16,9 +16,9 @@ Route::post('/login', [JWTAuthController::class, 'login']);
 
 
 Route::middleware([JwtMiddleware::class])->group(function (){
-    Route::get('user', [JWTAuthController::class, 'getUser']);
+    Route::get('/user', [JWTAuthController::class, 'getUser']);
 
-    Route::post('logout', [JWTAuthController::class, 'logout']);
+    Route::get('/logout', [JWTAuthController::class, 'logout']);
     Route::get('/interns', [InternController::class, 'index']);
 
     Route::post('/interns', [InternController::class, 'store']);
