@@ -39,7 +39,7 @@ class JWTAuthController extends Controller
    
            $token = JWTAuth::fromUser($user);
    
-           return $this->sendSweetAlert('error', self::USER_REGISTRED, 201, nameAdicionalData:'user_data', adicionalData:['user' => $user, 'token' => $token]);
+           return $this->sendSweetAlert('error', self::USER_REGISTRED, 201, [$user], $token);
        }
    
        // User login
