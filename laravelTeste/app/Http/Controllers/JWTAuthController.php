@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+
+use function Illuminate\Log\log;
+use function Laravel\Prompts\error;
 
 class JWTAuthController extends Controller
 {
@@ -57,13 +62,12 @@ class JWTAuthController extends Controller
    
                // (optional) Attach the role to the token.
                $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
-   
 
-               return $this->sendSweetalert('success', self::USER_LOGGIN, data:[$user], token:$token);
-
-               return $this->sendSweetalert('success', self::USER_LOGGIN, token:'token');
+               Log::debug('Usuário Logado');
+               return $this->sendSweetalert('success', self::USER_LOGGIN, token:$token);
 
            } catch (JWTException $e) {
+                Log::debug($e->getMessage(), [$e]);
                return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
            }
        }
@@ -76,6 +80,7 @@ class JWTAuthController extends Controller
                    return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
                }
            } catch (JWTException $e) {
+                Log::debug($e->getMessage(), [$e]);
                return $this->sendSweetalert('error', self::INVALID_TOKEN, 400);
            }
    

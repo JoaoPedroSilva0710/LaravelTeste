@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\Traits\Message;
 use Closure;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
+use App\Helpers\Traits\Message;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 
 class JwtMiddleware 
@@ -23,6 +24,7 @@ class JwtMiddleware
         try {
             $user = JWTAuth::parseToken()->authenticate();
         } catch (JWTException $e) {
+            Log::info($e->getMessage());
             return $this->sendSweetalert('error', self::INVALID_TOKEN, 401);
         }
 

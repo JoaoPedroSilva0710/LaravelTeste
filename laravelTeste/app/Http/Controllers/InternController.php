@@ -22,7 +22,12 @@ class InternController extends Controller
      */
     public function index()
     {
-        return response()->json(Intern::with('phones')->paginate(15));
+        try {
+
+            return response()->json(Intern::with('phones')->paginate(15));
+        } catch (\Throwable $th) {
+            Log::critical($th->getMessage(), [$th]);
+        }
     }
 
 
@@ -48,6 +53,7 @@ class InternController extends Controller
             return response()->json([ 'Estagiário' => $intern, 'Telefone' => $phone], 201);
 
         } catch (\Throwable $th) {
+            Log::info($th->getMessage(), [$th]);
             if (!str_contains($th->getMessage(), "interns_cpf_unique")) {
                 return $this->sendSweetalert('error',self::GENERIC_ERROR, 400);
             }
