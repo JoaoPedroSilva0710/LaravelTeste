@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('api');
 
-Route::post('/register', [JWTAuthController::class], 'register');
+Route::post('/register', [JWTAuthController::class, 'register']);
 
 Route::post('/login', [JWTAuthController::class, 'login']);
 

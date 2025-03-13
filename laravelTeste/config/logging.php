@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Log\Logger;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
@@ -131,12 +132,11 @@ return [
         'telegram' => [
             'driver' => 'monolog',
             'handler' => FilterHandler::class,
-            'level' => env('LOG_LEVEL', 'error'),
+            'level' => env('LOG_LEVEL', 'emergency'),
             'with' => [
                 'handler' => new TelegramBotHandler(
                     env('TELEGRAM_API_KEY'),
-                    env('TELEGRAM_CHANNEL'),
-                    env('LOG_LEVEL', 'error')
+                    env('TELEGRAM_CHANNEL')
                 ),
             ],
         ],

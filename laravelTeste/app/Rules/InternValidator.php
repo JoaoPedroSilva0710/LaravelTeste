@@ -27,6 +27,8 @@ class InternValidator implements ValidationRule
             $validator->errors()->add('cpf', 'Este CPF não é válido');
         }
         
+        isset($cpf[10]) ? $cpf = $cpf : $cpf = '11111111111';
+
         for ($t = 9; $t < 11; $t++) {
             for ($d = 0, $c = 0; $c < $t; $c++) {
                 $d += $cpf[$c] * (($t + 1) - $c);

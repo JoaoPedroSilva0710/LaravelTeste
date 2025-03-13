@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JWTAuthRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,23 +25,15 @@ class JWTAuthController extends Controller
     const USER_LOGGIN = 'O usuário foi logado com sucesso';
     const USER_REGISTRED = 'O usuário foi registrado com sucesso';
        // User registration
-       public function register(Request $request)
+       public function register(JWTAuthRequest $request)
        {
-           $validator = Validator::make($request->all(), [
-               'name' => 'required|string|max:255',
-               'email' => 'required|string|email|max:255|unique:users',
-               'password' => 'required|string|min:6|confirmed',
-           ]);
+           $validated = $request->validated();
    
-           if($validator->fails()){
-               return $this->sendSweetalert('error', $validator->errors()->toJson(), 400);
-           }
-   
-           $user = User::create([
-               'name' => $request->get('name'),
-               'email' => $request->get('email'),
-               'password' => Hash::make($request->get('password')),
-           ]);
+           $dataUser = ['name' => $validated['name'],
+           'email' => $validated['email'],
+           'password' => Hash::make($validated['password'])];
+
+           $user = User::create($dataUser);
    
            $token = JWTAuth::fromUser($user);
    
@@ -63,11 +56,12 @@ class JWTAuthController extends Controller
                // (optional) Attach the role to the token.
                $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
 
-               Log::debug('Usuário Logado');
+               Log::emergency("\$e->getMessage(), [\$e]");
+
                return $this->sendSweetalert('success', self::USER_LOGGIN, token:$token);
 
            } catch (JWTException $e) {
-                Log::debug($e->getMessage(), [$e]);
+                Log::emergency($e->getMessage(), [$e]);
                return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
            }
        }
@@ -76,11 +70,10 @@ class JWTAuthController extends Controller
        public function getUser()
        {
            try {
-               if (! $user = JWTAuth::parseToken()->authenticate()) {
-                   return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
-               }
+               if (! $user = JWTAuth::parseToken()->authenticate()) return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
+
            } catch (JWTException $e) {
-                Log::debug($e->getMessage(), [$e]);
+               Log::debug($e->getMessage(), [$e]);
                return $this->sendSweetalert('error', self::INVALID_TOKEN, 400);
            }
    
