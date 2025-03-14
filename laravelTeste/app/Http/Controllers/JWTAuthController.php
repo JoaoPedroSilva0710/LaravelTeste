@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\JWTAuthRequest;
-use App\Models\User;
 use Exception;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
-
 use function Illuminate\Log\log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use function Laravel\Prompts\error;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+
+use App\Http\Requests\JWTAuthRequest;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class JWTAuthController extends Controller
 {
@@ -24,20 +25,25 @@ class JWTAuthController extends Controller
     const USER_LOGOUT = 'O usuário foi deslogado com sucesso';
     const USER_LOGGIN = 'O usuário foi logado com sucesso';
     const USER_REGISTRED = 'O usuário foi registrado com sucesso';
+    const USER_OBTAINED = 'usuário obtido';
+
        // User registration
        public function register(JWTAuthRequest $request)
        {
            $validated = $request->validated();
    
-           $dataUser = ['name' => $validated['name'],
-           'email' => $validated['email'],
-           'password' => Hash::make($validated['password'])];
-
+           $dataUser = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
+       ];
            $user = User::create($dataUser);
    
            $token = JWTAuth::fromUser($user);
    
-           return $this->sendSweetAlert('error', self::USER_REGISTRED, 201, [$user], $token);
+           return $this->sendSweetAlert('success', self::USER_REGISTRED, 201, [$user], $token);
        }
    
        // User login
@@ -51,6 +57,9 @@ class JWTAuthController extends Controller
                }
    
                // Get the authenticated user.
+               /**
+                * @disregard P1013
+                */
                $user = auth()->user();
    
                // (optional) Attach the role to the token.
@@ -77,7 +86,7 @@ class JWTAuthController extends Controller
                return $this->sendSweetalert('error', self::INVALID_TOKEN, 400);
            }
    
-           return $this->sendSweetalert('success', 'usuário obtido', data:[$user]);
+           return $this->sendSweetalert('success', self::USER_OBTAINED, data:[$user]);
        }
    
        // User logout

@@ -55,10 +55,16 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        DB::statement("DROP TRIGGER IF EXISTS tgr_ts_vector_column_insert ON interns");
-        DB::statement("DROP function update_column_ts_vector_search_name() cascade");
-        Schema::dropIfExists('interns');
-    }
+public function down(): void
+{
+    // Drop the trigger first
+    DB::statement("DROP TRIGGER IF EXISTS tgr_ts_vector_column_insert ON interns");
+
+    // Drop the function without cascade
+    DB::statement("DROP FUNCTION IF EXISTS update_column_ts_vector_search_name()");
+
+    // Drop the interns table
+    Schema::dropIfExists('interns');
+}
+
 };
