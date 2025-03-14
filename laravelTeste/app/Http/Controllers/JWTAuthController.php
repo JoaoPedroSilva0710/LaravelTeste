@@ -36,10 +36,8 @@ class JWTAuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
        ];
-           $user = User::create($dataUser);
+           $user = User::factory()->create($dataUser);
    
            $token = JWTAuth::fromUser($user);
    
