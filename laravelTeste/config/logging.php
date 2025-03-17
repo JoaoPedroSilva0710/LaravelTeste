@@ -57,7 +57,8 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', env('LOG_STACK', 'single')),
+            // 'channels' => explode(',', env('LOG_STACK', 'single')),
+            'channels' => ['single', 'telegram'],
             'ignore_exceptions' => false,
         ],
 
@@ -129,16 +130,15 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
         'telegram' => [
-            'driver' => 'monolog',
-            'handler' => FilterHandler::class,
-            'level' => env('LOG_LEVEL', 'emergency'),
-            'with' => [
-                'handler' => new TelegramBotHandler(
-                    env('TELEGRAM_API_KEY'),
-                    env('TELEGRAM_CHANNEL')
-                ),
-            ],
+                    'driver'  => 'monolog',
+                    'handler' => FilterHandler::class,
+                    'level' => 'emergency',
+                    'with' => [
+                        'handler' => new TelegramBotHandler($apiKey = env('TELEGRAM_API_KEY'), $channel = env('TELEGRAM_CHANNEL'),
+                        'emergency')
+                    ]
         ],
 
 ],

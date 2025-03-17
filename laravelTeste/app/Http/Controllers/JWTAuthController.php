@@ -63,6 +63,8 @@ class JWTAuthController extends Controller
                // (optional) Attach the role to the token.
               //  $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
 
+               Log::info("\$e->getMessage(), [\$e]");
+               
                Log::emergency("\$e->getMessage(), [\$e]");
 
                return $this->sendSweetalert('success', self::USER_LOGGIN, token:$token);
