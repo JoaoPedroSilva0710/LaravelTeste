@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use function Illuminate\Log\log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use function Laravel\Prompts\error;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-
 use App\Http\Requests\JWTAuthRequest;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -26,6 +24,7 @@ class JWTAuthController extends Controller
     const USER_LOGGIN = 'O usuário foi logado com sucesso';
     const USER_REGISTRED = 'O usuário foi registrado com sucesso';
     const USER_OBTAINED = 'usuário obtido';
+    const JWT_TOKEN_REFRESHED = 'O token JWT foi atualizado';
 
        // User registration
        public function register(JWTAuthRequest $request)
@@ -35,9 +34,10 @@ class JWTAuthController extends Controller
            $dataUser = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-       ];
-           $user = User::factory()->create($dataUser);
+            'password' => Hash::make($validated['password'])
+            ];
+            
+           $user = User::create($dataUser);
    
            $token = JWTAuth::fromUser($user);
    
@@ -61,7 +61,7 @@ class JWTAuthController extends Controller
                $user = auth()->user();
    
                // (optional) Attach the role to the token.
-               $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
+              //  $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
 
                Log::emergency("\$e->getMessage(), [\$e]");
 
@@ -77,7 +77,7 @@ class JWTAuthController extends Controller
        public function getUser()
        {
            try {
-               if (! $user = JWTAuth::parseToken()->authenticate()) return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
+               if (!$user = JWTAuth::parseToken()->authenticate()) return $this->sendSweetalert('error',self::USER_NOT_FOUND, 404);
 
            } catch (JWTException $e) {
                Log::debug($e->getMessage(), [$e]);
@@ -93,5 +93,23 @@ class JWTAuthController extends Controller
            JWTAuth::invalidate(JWTAuth::getToken());
    
            return $this->sendSweetalert('success', self::USER_LOGOUT);
+       }
+
+       // Refresh user JWT TOKEN
+       public function refresh() {
+
+        try {
+         /**
+         * @disregard P1013
+         */
+            $token = auth()->refresh();
+
+        } catch (JWTException $th) {
+            Log::alert($th->getMessage(), ['Exception' => $th]);
+
+            return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
+        }
+
+        return response()->json(['token' => $token]);
        }
 }
