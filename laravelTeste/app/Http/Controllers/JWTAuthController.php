@@ -44,7 +44,11 @@ class JWTAuthController extends Controller
            return $this->sendSweetAlert('success', self::USER_REGISTRED, 201, [$user], $token);
        }
    
-       // User login
+       /**
+        * Function for the user log in the application, verify the existing of user and the credentials is right. Then create a JWT Token for the user and send a Sweet Alert pattern as response.
+        * @param Request $request is the request.
+        * @return JsonResponse
+        */
        public function login(Request $request)
        {
            $credentials = $request->only('email', 'password');
@@ -62,10 +66,6 @@ class JWTAuthController extends Controller
    
                // (optional) Attach the role to the token.
               //  $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
-
-               Log::info("\$e->getMessage(), [\$e]");
-               
-               Log::emergency("\$e->getMessage(), [\$e]");
 
                return $this->sendSweetalert('success', self::USER_LOGGIN, token:$token);
 

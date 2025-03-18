@@ -136,7 +136,7 @@ return [
                     'handler' => FilterHandler::class,
                     'level' => 'emergency',
                     'with' => [
-                        'handler' => new TelegramBotHandler($apiKey = env('TELEGRAM_API_KEY'), $channel = env('TELEGRAM_CHANNEL'),
+                        'handler' => new TelegramBotHandler(env('TELEGRAM_API_KEY'), env('TELEGRAM_CHANNEL'),
                         'emergency')
                     ]
         ],
