@@ -2,10 +2,15 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+//use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Facades\DB;
+use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic test example.
      */
@@ -13,5 +18,16 @@ class ExampleTest extends TestCase
     {
         
         $this->assertTrue(true);
+    }
+
+
+    public function test_check_if_users_getting_fetched_with_id(): void
+    {
+        User::factory(10)->create();
+
+        $response = DB::table('users')->first();
+
+        dd($response);
+
     }
 }
