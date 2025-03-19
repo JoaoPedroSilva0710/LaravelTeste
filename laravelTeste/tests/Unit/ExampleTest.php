@@ -11,6 +11,13 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    public function up() : void 
+    {
+        User::factory(10)->create();
+        
+    }
     /**
      * A basic test example.
      */
@@ -24,10 +31,10 @@ class ExampleTest extends TestCase
     public function test_check_if_users_getting_fetched_with_id(): void
     {
         User::factory(10)->create();
-
+        
         $response = DB::table('users')->first();
 
-        dd($response);
+        $this->assertEquals(1,$response->id);
 
     }
 }
