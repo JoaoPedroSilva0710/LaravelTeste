@@ -25,7 +25,7 @@ class InternFactory extends Factory
             'name' => fake()->name(),
             'gender' => fake()->randomElement(Gender::cases())->value,
             'birth' => fake()->date(),
-            'cpf' => fake()->unique()->numerify('###########')
+            'cpf' => fake()->cpf(false)
         ];
     }
 
