@@ -2,22 +2,28 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\Traits\Date;
+use App\Helpers\Traits\RegexPatterns;
 use App\Rules\InternValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class InternRequest extends FormRequest
 {
+    use RegexPatterns;
+    use Date; 
+
     protected $stopOnFirstFailure = true;
 
     const NAME_REQUIRED = 'Informe um nome para o estagiário';
     const GENDER_REQUIRED = 'Informe um sexo para o estagiário';
     const BIRTH_REQUIRED = 'Informe uma data de nascimento para o estagiário';
     const BIRTH_NOT_DATE = 'Escreva um formato de data válido Ano-Mês-Dia';
-    const PHONE_REQUIRED = 'Informe um telefone para o estagiário';
-    const PHONE_TOO_SHORT = 'O telefone deve conter no minímo 8 caracteres ';
-    const PHONE_TOO_LONG = 'O telefone deve conter no máximo 11 caracteres ';
     const CPF_REQUIRED = 'Informe um CPF para o estagiário';
     const CPF_INVALID_LENGTH = 'O CPF deve conter 11 caracteres';
+    const PHONE_REQUIRED = 'Informe um telefone para o estagiário';
+    const PHONE_IS_INVALID = 'O número de telefone é inválido';
+    const GENDER_PATTERN = 'O genêro enviado deve ser F, M ou O';
+    const NAME_VALID = 'Informe um nome válido para o usuário';
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -34,11 +40,11 @@ class InternRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'gender' => 'required',
-            'birth' => 'required|date_format:"Y-m-d"',
-            'cpf' => 'required|min:11|max:14',
-            'phone' => 'required|min:8|max:11'   
+            'name' => "required|regex:$this->regex_name_pattern",
+            'gender' => "required|regex:$this->regex_sex_pattern",
+            'birth' => "required|date_format:$this->dateStandardFormat",
+            'cpf' => "required|min:11|max:14",
+            'phone' => "required|regex:$this->regex_phone"   
         ];
     }
 
@@ -50,11 +56,12 @@ class InternRequest extends FormRequest
             'birth.required' => self::BIRTH_REQUIRED,
             'birth.date_format' => self::BIRTH_NOT_DATE,
             'cpf.required' => self::CPF_REQUIRED,
-            'phone.required' => self::PHONE_REQUIRED,
             'cpf.min' => self::CPF_INVALID_LENGTH,
             'cpf.max' => self::CPF_INVALID_LENGTH,
-            'phone.min' => self::PHONE_TOO_SHORT,
-            'phone.max' => self::PHONE_TOO_LONG,
+            'phone.required' => self::PHONE_REQUIRED,
+            'phone.regex' => self::PHONE_IS_INVALID,
+            'gender.regex' => self::GENDER_PATTERN,
+            'name.regex' => self::NAME_VALID
         ];
         
     }

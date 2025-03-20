@@ -6,8 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RoutesTest extends TestCase
+class UserTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
