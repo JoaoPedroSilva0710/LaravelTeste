@@ -14,16 +14,16 @@ class InternRequest extends FormRequest
 
     protected $stopOnFirstFailure = true;
 
-    const NAME_REQUIRED = 'Informe um nome para o estagiário';
-    const GENDER_REQUIRED = 'Informe um sexo para o estagiário';
-    const BIRTH_REQUIRED = 'Informe uma data de nascimento para o estagiário';
-    const BIRTH_NOT_DATE = 'Escreva um formato de data válido Ano-Mês-Dia';
-    const CPF_REQUIRED = 'Informe um CPF para o estagiário';
-    const CPF_INVALID_LENGTH = 'O CPF deve conter 11 caracteres';
-    const PHONE_REQUIRED = 'Informe um telefone para o estagiário';
-    const PHONE_IS_INVALID = 'O número de telefone é inválido';
-    const GENDER_PATTERN = 'O genêro enviado deve ser F, M ou O';
-    const NAME_VALID = 'Informe um nome válido para o usuário';
+    const REQUIRED_NAME = 'Informe um nome para o estagiário';
+    const REQUIRED_GENDER = 'Informe um sexo para o estagiário';
+    const REQUIRED_BIRTH = 'Informe uma data de nascimento para o estagiário';
+    const INVALID_BIRTH_DATE_FORMAT = 'Escreva um formato de data válido Ano-Mês-Dia';
+    const REQUIRED_CPF = 'Informe um CPF para o estagiário';
+    const INVALID_CPF_LENGTH = 'O CPF deve conter 11 caracteres';
+    const REQUIRED_PHONE = 'Informe um telefone para o estagiário';
+    const INVALID_PHONE_NUMBER = 'O número de telefone é inválido';
+    const GENDER_VALIDATION_PATTERN = 'O genêro enviado deve ser F, M ou O';
+    const INVALID_NAME = 'Informe um nome válido para o usuário';
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -51,17 +51,17 @@ class InternRequest extends FormRequest
     public function messages(): array
     {
         return[
-            'name.required' => self::NAME_REQUIRED,
-            'gender.required' => self::GENDER_REQUIRED,
-            'birth.required' => self::BIRTH_REQUIRED,
-            'birth.date_format' => self::BIRTH_NOT_DATE,
-            'cpf.required' => self::CPF_REQUIRED,
-            'cpf.min' => self::CPF_INVALID_LENGTH,
-            'cpf.max' => self::CPF_INVALID_LENGTH,
-            'phone.required' => self::PHONE_REQUIRED,
-            'phone.regex' => self::PHONE_IS_INVALID,
-            'gender.regex' => self::GENDER_PATTERN,
-            'name.regex' => self::NAME_VALID
+            'name.required' => self::REQUIRED_NAME,
+            'gender.required' => self::REQUIRED_GENDER,
+            'birth.required' => self::REQUIRED_BIRTH,
+            'birth.date_format' => self::INVALID_BIRTH_DATE_FORMAT,
+            'cpf.required' => self::REQUIRED_CPF,
+            'cpf.min' => self::INVALID_CPF_LENGTH,
+            'cpf.max' => self::INVALID_CPF_LENGTH,
+            'phone.required' => self::REQUIRED_PHONE,
+            'phone.regex' => self::INVALID_PHONE_NUMBER,
+            'gender.regex' => self::GENDER_VALIDATION_PATTERN,
+            'name.regex' => self::INVALID_NAME
         ];
         
     }

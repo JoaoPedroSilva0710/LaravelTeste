@@ -17,13 +17,13 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class JWTAuthController extends Controller
 {
     const INVALID_CREDENTIALS = 'O login ou a senha do usuário são inválidos';
-    const NOT_POSSIBLE_CREATE_TOKEN = 'Não foi possível criar o token';
+    const UNABLE_TO_CREATE_TOKEN = 'Não foi possível criar o token';
     const USER_NOT_FOUND = 'O usuário não foi encontrado';
     const INVALID_TOKEN = 'O token é inválido';
-    const USER_LOGOUT = 'O usuário foi deslogado com sucesso';
-    const USER_LOGGIN = 'O usuário foi logado com sucesso';
-    const USER_REGISTRED = 'O usuário foi registrado com sucesso';
-    const USER_OBTAINED = 'usuário obtido';
+    const USER_LOGOUT = 'O usuário foi desconectado com sucesso';
+    const USER_LOGGING = 'O usuário foi logado com sucesso';
+    const USER_REGISTERED = 'O usuário foi registrado com sucesso';
+    const USER_RETRIEVED = 'Usuário obtido com sucesso';
     const JWT_TOKEN_REFRESHED = 'O token JWT foi atualizado';
 
        // User registration
@@ -41,7 +41,7 @@ class JWTAuthController extends Controller
    
            $token = JWTAuth::fromUser($user);
    
-           return $this->sendSweetAlert('success', self::USER_REGISTRED, 201, [$user], $token);
+           return $this->sendSweetAlert('success', self::USER_REGISTERED, 201, [$user], $token);
        }
    
        /**
@@ -67,11 +67,11 @@ class JWTAuthController extends Controller
                // (optional) Attach the role to the token.
               //  $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
 
-               return $this->sendSweetalert('success', self::USER_LOGGIN, token:$token);
+               return $this->sendSweetalert('success', self::USER_LOGGING, token:$token);
 
            } catch (JWTException $e) {
                 Log::emergency($e->getMessage(), [$e]);
-               return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
+               return $this->sendSweetalert('error', self::UNABLE_TO_CREATE_TOKEN, 500);
            }
        }
    
@@ -86,7 +86,7 @@ class JWTAuthController extends Controller
                return $this->sendSweetalert('error', self::INVALID_TOKEN, 400);
            }
    
-           return $this->sendSweetalert('success', self::USER_OBTAINED, data:[$user]);
+           return $this->sendSweetalert('success', self::USER_RETRIEVED, data:[$user]);
        }
    
        // User logout
@@ -109,7 +109,7 @@ class JWTAuthController extends Controller
         } catch (JWTException $th) {
             Log::alert($th->getMessage(), ['Exception' => $th]);
 
-            return $this->sendSweetalert('error', self::NOT_POSSIBLE_CREATE_TOKEN, 500);
+            return $this->sendSweetalert('error', self::UNABLE_TO_CREATE_TOKEN, 500);
         }
 
         return response()->json(['token' => $token]);
