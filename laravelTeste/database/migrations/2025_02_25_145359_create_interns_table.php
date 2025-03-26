@@ -25,7 +25,7 @@ return new class extends Migration
 
      });
 
-    //  DB::statement("CREATE EXTENSION unaccent;");
+    DB::statement("CREATE EXTENSION IF NOT EXISTS unaccent;");
 
     DB::statement("CREATE INDEX IF NOT EXISTS search_name_fulltext_idx ON interns USING gist(ts_vector_search_name)");
 
